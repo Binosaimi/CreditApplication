@@ -1,0 +1,47 @@
+﻿using credit.customers.Data;
+using credit.customers.Data.Entities;
+using credit.customers.Dtos;
+using Microsoft.EntityFrameworkCore;
+
+namespace credit.customers.Services;
+/*
+ * expected functionalities:
+ * 1. get customer info
+ * 2. get customer delinquent loans
+ * 3. get customer's total loans
+ * 4. get customer by institute id
+ * 5. add block on customer
+ */
+public class CustomerService(CustomerDbContext db)
+{
+    public async Task<List<CustomerResponse>> GetAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await db.Customers
+            .AsNoTracking()
+            .Where(customer => customer.Id == id)
+            .Select(customer => new CustomerResponse(
+                customer.Id,
+                customer.CivilId,
+                customer.Name,
+                customer.Dob,
+                customer.IsEligible))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<CustomerResponse> CreateAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
+    {
+        var customer = new Customers
+        {
+            Id = Guid.NewGuid(),
+            CivilId = request.CivilId,
+            Dob = request.Dob,
+            Name = request.Name,
+            IsEligible = true
+        };
+
+        db.Customers.Add(customer);
+        await db.SaveChangesAsync(cancellationToken);
+        return new CustomerResponse(
+            customer.Id, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
+    }
+}

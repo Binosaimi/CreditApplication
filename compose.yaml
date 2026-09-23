@@ -1,0 +1,19 @@
+﻿services:
+  credit.customers:
+    image: credit.customers
+    build:
+      context: .
+      dockerfile: credit.customers/Dockerfile
+
+  credit.loans:
+    image: credit.loans
+    build:
+      context: .
+      dockerfile: credit.loans/Dockerfile
+
+  credit.identity:
+    image: credit.identity
+    build:
+      context: .
+      dockerfile: credit.identity/Dockerfile
+
