@@ -5,6 +5,7 @@ namespace credit.customers.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 [Index(nameof(CivilId), IsUnique = true)]
+[PrimaryKey(nameof(CustomerId))]
 public class Customers
 {
     public Guid CustomerId { get; set; }

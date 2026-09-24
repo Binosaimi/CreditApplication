@@ -1,7 +1,7 @@
 ﻿namespace credit.customers.Dtos;
 
 public record CustomerResponse(
-    Guid Id,
+    Guid CustomerId,
     string CivilId,
     string Name,
     DateOnly Dob,

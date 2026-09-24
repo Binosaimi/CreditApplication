@@ -15,11 +15,11 @@ namespace credit.customers.Services;
  */
 public class CustomerService(CustomerDbContext db, LoanClient client)
 {
-    public async Task<List<CustomerResponse>> GetAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<List<CustomerResponse>> GetAsync(Guid customerId, CancellationToken cancellationToken)
     {
         return await db.Customers
             .AsNoTracking()
-            .Where(customer => customer.CustomerId == id)
+            .Where(customer => customer.CustomerId == customerId)
             .Select(customer => new CustomerResponse(
                 customer.CustomerId,
                 customer.CivilId,

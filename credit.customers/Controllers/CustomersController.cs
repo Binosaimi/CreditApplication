@@ -8,10 +8,10 @@ namespace credit.customers.Controllers;
 [Route("api/v1/customers")]
 public class CustomersController(CustomerService service) : ControllerBase
 {
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CustomerResponse>> Get(Guid id, CancellationToken cancellationToken)
+    [HttpGet("{customerId:guid}")]
+    public async Task<ActionResult<CustomerResponse>> Get(Guid customerId, CancellationToken cancellationToken)
     {
-        var customer = await service.GetAsync(id, cancellationToken);
+        var customer = await service.GetAsync(customerId, cancellationToken);
 
         if (customer is null)
             return NotFound();
@@ -28,11 +28,11 @@ public class CustomersController(CustomerService service) : ControllerBase
 
         return CreatedAtAction(
             nameof(Get),
-            new { id = customer.Id },
+            new { customerId = customer.CustomerId },
             customer);
     }
     
-    [HttpGet("{id:guid}/delinquencies")]
+    [HttpGet("{customerId:guid}/delinquencies")]
     public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoans(Guid customerId, CancellationToken cancellationToken)
     {
         var loans = await service.GetCustomerDelinquentLoansAsync(customerId, cancellationToken);

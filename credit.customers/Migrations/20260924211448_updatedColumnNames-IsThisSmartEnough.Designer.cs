@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using credit.customers.Data;
@@ -11,9 +12,11 @@ using credit.customers.Data;
 namespace credit.customers.Migrations
 {
     [DbContext(typeof(CustomerDbContext))]
-    partial class CustomerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260924211448_updatedColumnNames-IsThisSmartEnough")]
+    partial class updatedColumnNamesIsThisSmartEnough
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace credit.customers.Migrations
 
             modelBuilder.Entity("credit.customers.Data.Entities.Customers", b =>
                 {
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("customer_id");
@@ -49,7 +52,7 @@ namespace credit.customers.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("CustomerId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CivilId")
                         .IsUnique();
@@ -64,7 +67,7 @@ namespace credit.customers.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("litigation_id");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("customer_id");
 

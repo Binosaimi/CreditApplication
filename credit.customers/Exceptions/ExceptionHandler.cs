@@ -1,52 +1,72 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace credit.customers.Exceptions;
 
-public class GlobalExceptionHandler(
-    IProblemDetailsService problemDetailsService,
+public sealed class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
+        HttpContext context,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError(exception, "Unhandled exception");
-
         var (status, title, detail) = exception switch
         {
             DbUpdateException
             {
-                InnerException: PostgresException { SqlState: "23505" }
+                InnerException: PostgresException
+                {
+                    SqlState: PostgresErrorCodes.UniqueViolation
+                }
             } => (
                 StatusCodes.Status409Conflict,
                 "Conflict",
                 "A record with the same unique value already exists."
             ),
 
+            HttpRequestException { StatusCode: HttpStatusCode.InternalServerError } => (
+                StatusCodes.Status502BadGateway,
+                "Upstream Service Error",
+                "Loan service returned an internal server error."
+            ),
+
+            HttpRequestException => (
+                StatusCodes.Status503ServiceUnavailable,
+                "Service Unavailable",
+                "A dependent service is unavailable."
+            ),
+
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "Internal Server Error",
                 "An unexpected error occurred."
-            )
+            ),
         };
 
-        httpContext.Response.StatusCode = status;
+        logger.LogError(
+            exception,
+            "Request failed with status {StatusCode}",
+            status);
 
-        return await problemDetailsService.TryWriteAsync(
-            new ProblemDetailsContext
+        context.Response.StatusCode = status;
+
+        await context.Response.WriteAsJsonAsync(
+            new ProblemDetails
             {
-                HttpContext = httpContext,
-                
-                ProblemDetails = new ProblemDetails
+                Status = status,
+                Title = title,
+                Detail = detail,
+                Extensions =
                 {
-                    Status = status,
-                    Title = title,
-                    Detail = detail
+                    ["traceId"] = context.TraceIdentifier
                 }
-            });
+            },
+            cancellationToken);
+
+        return true;
     }
 }
