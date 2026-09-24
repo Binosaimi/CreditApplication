@@ -31,4 +31,12 @@ public class CustomersController(CustomerService service) : ControllerBase
             new { id = customer.Id },
             customer);
     }
+    
+    [HttpGet("{id:guid}/delinquencies")]
+    public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoans(Guid customerId, CancellationToken cancellationToken)
+    {
+        var loans = await service.GetCustomerDelinquentLoansAsync(customerId, cancellationToken);
+
+        return loans;
+    }
 }

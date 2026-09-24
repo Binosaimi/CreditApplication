@@ -4,16 +4,21 @@
     build:
       context: .
       dockerfile: credit.customers/Dockerfile
+    ports:
+      - "5101:8080"
 
   credit.loans:
     image: credit.loans
     build:
       context: .
       dockerfile: credit.loans/Dockerfile
+    ports:
+      - "5102:8080"
 
   credit.identity:
     image: credit.identity
     build:
       context: .
       dockerfile: credit.identity/Dockerfile
-
+    ports:
+      - "5103:8080"

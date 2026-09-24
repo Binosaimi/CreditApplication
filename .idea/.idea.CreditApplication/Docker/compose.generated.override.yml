@@ -1,0 +1,59 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  credit.customers:
+    build:
+      context: "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication"
+      dockerfile: "credit.customers/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/credit.customers.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "credit.customers:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication\\credit.customers:/app:rw"
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication:/src:rw"
+    - "C:\\Users\\ASUS\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"
+  credit.identity:
+    build:
+      context: "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication"
+      dockerfile: "credit.identity/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/credit.identity.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "credit.identity:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication\\credit.identity:/app:rw"
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication:/src:rw"
+    - "C:\\Users\\ASUS\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"
+  credit.loans:
+    build:
+      context: "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication"
+      dockerfile: "credit.loans/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/credit.loans.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "credit.loans:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication\\credit.loans:/app:rw"
+    - "C:\\Users\\ASUS\\workbench\\cinet-assessment\\CreditApplication:/src:rw"
+    - "C:\\Users\\ASUS\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"

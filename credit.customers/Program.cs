@@ -1,3 +1,4 @@
+using credit.customers.Clients;
 using credit.customers.Data;
 using credit.customers.Exceptions;
 using credit.customers.Services;
@@ -18,6 +19,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CustomerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddScoped<CustomerService>();
+
+builder.Services.AddHttpClient<LoanClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["Services:LoanService"]!);
+});
+
 var app = builder.Build();
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.

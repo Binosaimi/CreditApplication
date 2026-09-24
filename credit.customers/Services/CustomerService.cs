@@ -1,4 +1,5 @@
-﻿using credit.customers.Data;
+﻿using credit.customers.Clients;
+using credit.customers.Data;
 using credit.customers.Data.Entities;
 using credit.customers.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace credit.customers.Services;
  * 4. get customer by institute id
  * 5. add block on customer
  */
-public class CustomerService(CustomerDbContext db)
+public class CustomerService(CustomerDbContext db, LoanClient client)
 {
     public async Task<List<CustomerResponse>> GetAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -43,5 +44,12 @@ public class CustomerService(CustomerDbContext db)
         await db.SaveChangesAsync(cancellationToken);
         return new CustomerResponse(
             customer.Id, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
+    }
+    
+    public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoansAsync(Guid customerId, CancellationToken cancellationToken)
+    {
+        var delinquencies =  await client.GetDelinquencies(customerId, cancellationToken);
+        var response = new GetCustomerDelinquenciesResponse(customerId, delinquencies);
+        return response;
     }
 }
