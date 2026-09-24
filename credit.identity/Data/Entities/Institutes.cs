@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace credit.identity.Data.Entities;
 
+[PrimaryKey(nameof(InstituteId))]
 public class Institutes
 {
     public Guid InstituteId { get; set; }

@@ -23,9 +23,10 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddHttpClient<LoanClient>(client =>
 {
     client.BaseAddress = new Uri(
-        builder.Configuration["Services:LoanService"]!);
+        builder.Configuration["Services:LoanService"]
+        ?? throw new InvalidOperationException(
+            "Services:LoanService is missing"));
 });
-
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {

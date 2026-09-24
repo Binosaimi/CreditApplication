@@ -8,7 +8,7 @@ namespace credit.loans.Controllers;
 [Route("api/v1/delinquencies")]
 public class DelinquenciesController(DelinquenciesService service) : ControllerBase
 {
-    [HttpGet("{id:guid}")]
+    [HttpGet("{customerId:guid}")]
     public async Task<List<DelinquenciesResponse>> GetDelinquenciesByCustomerAsync(Guid customerId, CancellationToken cancellationToken)
     {
         return await service.GetDelinquenciesByCustomerAsync(customerId, cancellationToken);

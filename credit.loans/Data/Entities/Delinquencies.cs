@@ -1,5 +1,8 @@
-﻿namespace credit.loans.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace credit.loans.Data.Entities;
+
+[PrimaryKey(nameof(DelinquencyId))]
 public class Delinquencies
 {
     public Guid DelinquencyId { get; set; }

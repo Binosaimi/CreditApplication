@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace credit.customers.Data.Entities;
 
+[PrimaryKey(nameof(LitigationId))]
 public class Litigation
 {
     public Guid LitigationId { get; set; }

@@ -1,5 +1,8 @@
-﻿namespace credit.identity.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace credit.identity.Data.Entities;
+
+[PrimaryKey(nameof(UserId))]
 public class Users
 {
     public Guid UserId { get; set; }

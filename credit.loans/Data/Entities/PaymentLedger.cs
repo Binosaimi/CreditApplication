@@ -1,5 +1,8 @@
-﻿namespace credit.loans.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace credit.loans.Data.Entities;
+
+[PrimaryKey(nameof(PaymentId))]
 public class PaymentLedger
 {
     public Guid PaymentId { get; set; }
