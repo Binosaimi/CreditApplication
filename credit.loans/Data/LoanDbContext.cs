@@ -14,7 +14,7 @@ public class LoanDbContext(DbContextOptions<LoanDbContext> options) : DbContext(
         modelBuilder.Entity<Loans>(entity =>
         {
             entity.ToTable("loans");
-            entity.Property(e => e.LoanId).HasColumnName("id");
+            entity.Property(e => e.LoanId).HasColumnName("loan_id");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.InstitutionId).HasColumnName("institution_id");
             entity.Property(e => e.LoanStartDate).HasColumnName("loan_start_date");
@@ -27,7 +27,7 @@ public class LoanDbContext(DbContextOptions<LoanDbContext> options) : DbContext(
         modelBuilder.Entity<PaymentLedger>(entity =>
         {
             entity.ToTable("PaymentLedger");
-            entity.Property(e => e.PaymentId).HasColumnName("id");
+            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
             entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
             entity.Property(e => e.LoanId).HasColumnName("loan_id");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");

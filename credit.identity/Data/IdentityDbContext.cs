@@ -25,7 +25,7 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
         modelBuilder.Entity<Users>(entity =>
         {
             entity.ToTable("users");
-            entity.Property(e => e.UserId).HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Username).HasColumnName("username");
             entity.Property(e => e.InstituteId).HasColumnName("institution_id");
         });
@@ -33,14 +33,14 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
         modelBuilder.Entity<Institutes>(entity =>
         {
             entity.ToTable("institutes");
-            entity.Property(e => e.InstituteId).HasColumnName("id");
+            entity.Property(e => e.InstituteId).HasColumnName("institute_id");
             entity.Property(e => e.InstituteName).HasColumnName("name");
         });
         
         modelBuilder.Entity<Roles>(entity =>
         {
             entity.ToTable("roles");
-            entity.Property(e => e.RoleId).HasColumnName("id");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.RoleName).HasColumnName("name");
         });
         
