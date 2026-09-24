@@ -4,7 +4,7 @@ namespace credit.customers.Data.Entities;
 
 public class Litigation
 {
-    public Guid Id { get; set; }
+    public Guid LitigationId { get; set; }
     public Guid LoanId { get; set; }
     public Guid InstitutionId { get; set; }
     public Guid CustomerId { get; set; }

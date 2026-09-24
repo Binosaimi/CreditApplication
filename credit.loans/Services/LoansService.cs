@@ -22,7 +22,7 @@ public class LoansService(LoanDbContext db)
             .AsNoTracking()
             .Where(loan => loan.CustomerId == customerId)
             .Select(loan => new LoansResponse(
-                loan.Id,
+                loan.LoanId,
                 loan.CustomerId,
                 loan.InstitutionId,
                 loan.LoanStartDate,
@@ -39,7 +39,7 @@ public class LoansService(LoanDbContext db)
             .AsNoTracking()
             .Where(loan => loan.InstitutionId == institutionId)
             .Select(loan => new LoansResponse(
-                loan.Id,
+                loan.LoanId,
                 loan.CustomerId,
                 loan.InstitutionId,
                 loan.LoanStartDate,

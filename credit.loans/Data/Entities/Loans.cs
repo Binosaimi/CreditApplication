@@ -2,7 +2,7 @@
 
 public class Loans
 {
-    public Guid Id { get; set; }
+    public Guid LoanId { get; set; }
     public Guid CustomerId { get; set; }
     public Guid InstitutionId { get; set; }
     public DateTime LoanStartDate { get; set; }

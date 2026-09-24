@@ -13,7 +13,7 @@ public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : Db
         modelBuilder.Entity<Customers>(entity =>
         {
             entity.ToTable("customers");
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.CivilId).HasColumnName("civil_id");
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Dob).HasColumnName("dob");
@@ -23,7 +23,7 @@ public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : Db
         modelBuilder.Entity<Litigation>(entity =>
         {
             entity.ToTable("litigation");
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.LitigationId).HasColumnName("litigation_id");
             entity.Property(e => e.LoanId).HasColumnName("loan_id");
             entity.Property(e => e.InstitutionId).HasColumnName("institution_id");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");

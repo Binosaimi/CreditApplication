@@ -19,9 +19,9 @@ public class CustomerService(CustomerDbContext db, LoanClient client)
     {
         return await db.Customers
             .AsNoTracking()
-            .Where(customer => customer.Id == id)
+            .Where(customer => customer.CustomerId == id)
             .Select(customer => new CustomerResponse(
-                customer.Id,
+                customer.CustomerId,
                 customer.CivilId,
                 customer.Name,
                 customer.Dob,
@@ -33,7 +33,7 @@ public class CustomerService(CustomerDbContext db, LoanClient client)
     {
         var customer = new Customers
         {
-            Id = Guid.NewGuid(),
+            CustomerId = Guid.NewGuid(),
             CivilId = request.CivilId,
             Dob = request.Dob,
             Name = request.Name,
@@ -43,13 +43,11 @@ public class CustomerService(CustomerDbContext db, LoanClient client)
         db.Customers.Add(customer);
         await db.SaveChangesAsync(cancellationToken);
         return new CustomerResponse(
-            customer.Id, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
+            customer.CustomerId, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
     }
     
     public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoansAsync(Guid customerId, CancellationToken cancellationToken)
     {
-        var delinquencies =  await client.GetDelinquencies(customerId, cancellationToken);
-        var response = new GetCustomerDelinquenciesResponse(customerId, delinquencies);
-        return response;
+        return new GetCustomerDelinquenciesResponse(customerId, await client.GetDelinquencies(customerId, cancellationToken));
     }
 }

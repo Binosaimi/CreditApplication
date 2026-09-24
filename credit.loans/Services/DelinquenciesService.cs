@@ -12,7 +12,7 @@ public class DelinquenciesService(LoanDbContext db)
             .AsNoTracking()
             .Where(d => d.Loans.CustomerId == customerId)
             .Select(delinquencies => new DelinquenciesResponse(
-                delinquencies.Id,
+                delinquencies.DelinquencyId,
                 delinquencies.LoanId,
                 delinquencies.DelinquencyDate))
             .ToListAsync(cancellationToken);

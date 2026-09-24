@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 [Index(nameof(CivilId), IsUnique = true)]
 public class Customers
 {
-    public Guid Id { get; set; }
+    public Guid CustomerId { get; set; }
     [MaxLength(12)] public required string CivilId { get; set; }
     [MaxLength(100)] public required string Name { get; set; }
     public required DateOnly Dob { get; set; }

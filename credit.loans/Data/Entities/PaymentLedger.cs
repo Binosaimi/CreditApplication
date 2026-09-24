@@ -2,7 +2,7 @@
 
 public class PaymentLedger
 {
-    public Guid Id { get; set; }
+    public Guid PaymentId { get; set; }
     public DateTime PaymentDate { get; set; }
     public Guid LoanId { get; set; }
     public Guid CustomerId { get; set; }

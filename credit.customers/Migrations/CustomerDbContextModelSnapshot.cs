@@ -24,7 +24,7 @@ namespace credit.customers.Migrations
 
             modelBuilder.Entity("credit.customers.Data.Entities.Customers", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -42,7 +42,7 @@ namespace credit.customers.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("CustomerId");
 
                     b.HasIndex("CivilId")
                         .IsUnique();
