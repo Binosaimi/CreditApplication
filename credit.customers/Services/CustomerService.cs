@@ -8,7 +8,7 @@ namespace credit.customers.Services;
 
 public class CustomerService(CustomerDbContext db, LoanClient loanClient, LitigationsService litigationsService)
 {
-    public async Task<CustomerResponse> GetAsync(Guid customerId, CancellationToken cancellationToken)
+    public async Task<CustomerResponse?> GetCustomerByIdAsync(Guid customerId, CancellationToken cancellationToken)
     {
         return await db.Customers
             .AsNoTracking()
@@ -84,7 +84,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
      * Credit rating C says no loans in litigation. Technically, no loans in litigation means no loans in Pending state. I included Guilty
      * states that did not satisfy condition for rating F. if i didn't do that, it would be the same rating as A if both have no delinquencies.
      * This makes no sense to compare perfect record with guilty verdicts
-     * 
+     *
      */
     public async Task<CustomerCreditScoreResponse> CalculateCreditScore(Guid customerId, CancellationToken cancellationToken)
     {
@@ -92,9 +92,8 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
         var activeLoans = loans.Where(l => l.Status == "Active").ToList();
         var delinquencies = await loanClient.GetDelinquencies(customerId, cancellationToken);
         var litigations = await litigationsService.GetLitigations(customerId, cancellationToken);
-        var civilId = (await GetAsync(customerId, cancellationToken)).CivilId;
-
-
+        var civilId = (await GetCustomerByIdAsync(customerId, cancellationToken)).CivilId;
+        
         var isFCreditScore = delinquencies.Count > 3 ||
                              litigations.Any(l =>
                              {
@@ -107,7 +106,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
                                      return false;
 
                                  return loan.Amount >= 10_000 ? 
-                                     l.DateOfVerdict > DateTime.UtcNow.AddYears(-3) : 
+                                     l.DateOfVerdict > DateTime.UtcNow.AddYears(-3) :
                                      l.DateOfVerdict > DateTime.UtcNow.AddYears(-1);
                              });
 

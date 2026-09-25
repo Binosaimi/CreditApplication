@@ -11,7 +11,7 @@ public class CustomersController(CustomerService service) : ControllerBase
     [HttpGet("{customerId:guid}")]
     public async Task<ActionResult<CustomerResponse>> Get(Guid customerId, CancellationToken cancellationToken)
     {
-        var customer = await service.GetAsync(customerId, cancellationToken);
+        var customer = await service.GetCustomerByIdAsync(customerId, cancellationToken);
 
         if (customer is null)
             return NotFound();
@@ -53,11 +53,6 @@ public class CustomersController(CustomerService service) : ControllerBase
     [HttpGet("customerId:guid/creditscore")]
     public async Task<ActionResult<CustomerCreditScoreResponse>> GetCreditScore(Guid customerId, CancellationToken cancellationToken)
     {
-        var customer = await service.CalculateCreditScore(customerId, cancellationToken);
-
-        if (customer is null)
-            return NotFound();
-
-        return Ok(customer);
+        return await service.CalculateCreditScore(customerId, cancellationToken);
     }
 }
