@@ -18,35 +18,53 @@ public class LoansService(LoanDbContext db)
 {
     public async Task<LoansResponse> GetLoansByCustomerAsync(Guid customerId, CancellationToken cancellationToken)
     {
-        return await db.Loans
-            .AsNoTracking()
-            .Where(loan => loan.CustomerId == customerId)
-            .Select(loan => new LoansResponse(
-                loan.LoanId,
-                loan.CustomerId,
-                loan.InstitutionId,
-                loan.LoanStartDate,
-                loan.Tenor,
-                loan.Amount,
-                loan.Rate,
-                loan.Status
-            )).FirstOrDefaultAsync(cancellationToken);
+        try
+        {
+            return await db.Loans
+                .AsNoTracking()
+                .Where(loan => loan.CustomerId == customerId)
+                .Select(loan => new LoansResponse(
+                    loan.LoanId,
+                    loan.CustomerId,
+                    loan.InstitutionId,
+                    loan.LoanStartDate,
+                    loan.Tenor,
+                    loan.Amount,
+                    loan.Rate,
+                    loan.Status
+                )).FirstOrDefaultAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 
     public async Task<LoansResponse> GetLoansByInstitutionAsync(Guid institutionId, CancellationToken cancellationToken)
     {
-        return await db.Loans
-            .AsNoTracking()
-            .Where(loan => loan.InstitutionId == institutionId)
-            .Select(loan => new LoansResponse(
-                loan.LoanId,
-                loan.CustomerId,
-                loan.InstitutionId,
-                loan.LoanStartDate,
-                loan.Tenor,
-                loan.Amount,
-                loan.Rate,
-                loan.Status
-            )).FirstOrDefaultAsync(cancellationToken);
+        try
+        {
+            return await db.Loans
+                .AsNoTracking()
+                .Where(loan => loan.InstitutionId == institutionId)
+                .Select(loan => new LoansResponse(
+                    loan.LoanId,
+                    loan.CustomerId,
+                    loan.InstitutionId,
+                    loan.LoanStartDate,
+                    loan.Tenor,
+                    loan.Amount,
+                    loan.Rate,
+                    loan.Status
+                )).FirstOrDefaultAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
     }
 }

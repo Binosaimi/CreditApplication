@@ -18,4 +18,5 @@ public class LoansController(LoansService service) : ControllerBase
 
         return Ok(customer);
     }
+    
 }

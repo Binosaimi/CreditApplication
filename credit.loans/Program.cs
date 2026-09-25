@@ -18,6 +18,7 @@ builder.Services.AddDbContext<LoanDbContext>(options => options.UseNpgsql(builde
 
 builder.Services.AddScoped<LoansService>();
 builder.Services.AddScoped<DelinquenciesService>();
+builder.Services.AddScoped<PaymentsService>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

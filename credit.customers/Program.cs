@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CustomerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<DelinquenciesService>();
 
 builder.Services.AddHttpClient<LoanClient>(client =>
 {

@@ -1,19 +1,11 @@
-﻿using credit.customers.Clients;
-using credit.customers.Data;
+﻿using credit.customers.Data;
 using credit.customers.Data.Entities;
 using credit.customers.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace credit.customers.Services;
-/*
- * expected functionalities:
- * 1. get customer info
- * 2. get customer delinquent loans
- * 3. get customer's total loans
- * 4. get customer by institute id
- * 5. add block on customer
- */
-public class CustomerService(CustomerDbContext db, LoanClient client)
+
+public class CustomerService(CustomerDbContext db)
 {
     public async Task<List<CustomerResponse>> GetAsync(Guid customerId, CancellationToken cancellationToken)
     {
@@ -45,9 +37,37 @@ public class CustomerService(CustomerDbContext db, LoanClient client)
         return new CustomerResponse(
             customer.CustomerId, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
     }
-    
-    public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoansAsync(Guid customerId, CancellationToken cancellationToken)
+
+    public async Task<CustomerResponse> BlockCustomerAsync(BlockCustomerRequest blockCustomerRequest, CancellationToken cancellationToken)
     {
-        return new GetCustomerDelinquenciesResponse(customerId, await client.GetDelinquencies(customerId, cancellationToken));
+        var customer = await db.Customers
+            .SingleOrDefaultAsync(
+                c => c.CustomerId == blockCustomerRequest.CustomerId,
+                cancellationToken);
+        if (customer == null)
+        {
+            throw new ArgumentException("Customer not found");
+        }
+
+        customer.IsEligible = !blockCustomerRequest.SetUserBlocked;
+        await db.SaveChangesAsync(cancellationToken);
+        return new CustomerResponse(
+            customer.CustomerId, customer.CivilId, customer.Name, customer.Dob, customer.IsEligible);
+    }
+
+    public async Task<List<CustomerResponse>> GetAllAsync(
+        CancellationToken cancellationToken)
+    {
+        return await db.Customers
+            .AsNoTracking()
+            .OrderBy(c => c.Name)
+            .Select(c => new CustomerResponse(
+                c.CustomerId,
+                c.CivilId,
+                c.Name,
+                c.Dob,
+                c.IsEligible
+            ))
+            .ToListAsync(cancellationToken);
     }
 }

@@ -32,11 +32,21 @@ public class CustomersController(CustomerService service) : ControllerBase
             customer);
     }
     
-    [HttpGet("{customerId:guid}/delinquencies")]
-    public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoans(Guid customerId, CancellationToken cancellationToken)
+    [HttpGet]
+    public async Task<ActionResult<List<CustomerResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var loans = await service.GetCustomerDelinquentLoansAsync(customerId, cancellationToken);
+        var customers = await service.GetAllAsync(cancellationToken);
 
-        return loans;
+        return Ok(customers);
+    }
+    
+    [HttpPost("customer-block")]
+    public async Task<ActionResult<CustomerResponse>> BlockCustomer(
+        BlockCustomerRequest request,
+        CancellationToken cancellationToken)
+    {
+        var customer = await service.BlockCustomerAsync(request, cancellationToken);
+
+        return Ok(customer);
     }
 }
