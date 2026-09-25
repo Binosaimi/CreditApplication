@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace credit.customers.Controllers;
 
+// TODO: move this to loans service
 [ApiController]
 [Route("api/v1/delinquencies")]
 public class DelinquenciesController(DelinquenciesService service) : ControllerBase

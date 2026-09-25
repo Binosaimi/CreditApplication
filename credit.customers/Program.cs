@@ -1,4 +1,5 @@
 using credit.customers.Clients;
+using credit.customers.Controllers;
 using credit.customers.Data;
 using credit.customers.Exceptions;
 using credit.customers.Services;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<CustomerDbContext>(options => options.UseNpgsql(bu
 
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<DelinquenciesService>();
+builder.Services.AddScoped<LitigationsService>();
 
 builder.Services.AddHttpClient<LoanClient>(client =>
 {

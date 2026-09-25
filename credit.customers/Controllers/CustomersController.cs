@@ -49,4 +49,15 @@ public class CustomersController(CustomerService service) : ControllerBase
 
         return Ok(customer);
     }
+    
+    [HttpGet("customerId:guid/creditscore")]
+    public async Task<ActionResult<CustomerCreditScoreResponse>> GetCreditScore(Guid customerId, CancellationToken cancellationToken)
+    {
+        var customer = await service.CalculateCreditScore(customerId, cancellationToken);
+
+        if (customer is null)
+            return NotFound();
+
+        return Ok(customer);
+    }
 }

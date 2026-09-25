@@ -19,4 +19,12 @@ public class LoansController(LoansService service) : ControllerBase
         return Ok(customer);
     }
     
+    [HttpPost]
+    public async Task<LoansResponse> Create(CreateLoanRequest request, CancellationToken cancellationToken)
+    {
+        var loan = await service.CreateLoanAsync(request, cancellationToken);
+
+        return loan;
+    }
+    
 }
