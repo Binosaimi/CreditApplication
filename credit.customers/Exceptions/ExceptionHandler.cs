@@ -70,4 +70,9 @@ public sealed class GlobalExceptionHandler(
 
         return true;
     }
+    
+    public class NoLoansException(string message)
+        : Exception(message);
+    public class LitigationException(string message)
+        : Exception(message);
 }

@@ -8,8 +8,6 @@ public class PaymentsService(LoanDbContext db)
 {
     public async Task<List<PaymentsResponse>> GetCustomerLastNPayments(Guid customerId, int numberOfPayments, CancellationToken cancellationToken)
     {
-        try
-        {
             return await db.PaymentLedger
                 .AsNoTracking()
                 .Where(l => l.CustomerId == customerId)
@@ -24,11 +22,22 @@ public class PaymentsService(LoanDbContext db)
                     l.Amount
                 ))
                 .ToListAsync(cancellationToken);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+    }
+
+    public async Task<List<PaymentsResponse>> GetLoansPayments(Guid loanId, CancellationToken cancellationToken)
+    {
+        return await db.PaymentLedger
+            .AsNoTracking()
+            .Where(l => l.LoanId == loanId)
+            .OrderByDescending(l => l.PaymentDate)
+            .Select(l => new PaymentsResponse(
+                l.PaymentId,
+                l.PaymentDate,
+                l.LoanId,
+                l.CustomerId,
+                l.InstitutionId,
+                l.Amount
+            ))
+            .ToListAsync(cancellationToken);
     }
 }

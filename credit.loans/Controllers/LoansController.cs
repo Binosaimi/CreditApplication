@@ -9,16 +9,11 @@ namespace credit.loans.Controllers;
 public class LoansController(LoansService service) : ControllerBase
 {
     [HttpGet("{customerId:guid}")]
-    public async Task<ActionResult<LoansResponse>> Get(Guid customerId, CancellationToken cancellationToken)
+    public async Task<LoansResponse> Get(Guid customerId, CancellationToken cancellationToken)
     {
-        var customer = await service.GetLoansByCustomerAsync(customerId, cancellationToken);
-
-        if (customer is null)
-            return NotFound();
-
-        return Ok(customer);
+        return await service.GetLoansByCustomerAsync(customerId, cancellationToken);
     }
-    
+
     [HttpPost]
     public async Task<LoansResponse> Create(CreateLoanRequest request, CancellationToken cancellationToken)
     {
@@ -26,5 +21,4 @@ public class LoansController(LoansService service) : ControllerBase
 
         return loan;
     }
-    
 }

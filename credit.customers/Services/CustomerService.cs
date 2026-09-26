@@ -2,6 +2,7 @@
 using credit.customers.Data;
 using credit.customers.Data.Entities;
 using credit.customers.Dtos;
+using credit.customers.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace credit.customers.Services;
@@ -93,7 +94,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
         var delinquencies = await loanClient.GetDelinquencies(customerId, cancellationToken);
         var litigations = await litigationsService.GetLitigations(customerId, cancellationToken);
         var civilId = (await GetCustomerByIdAsync(customerId, cancellationToken)).CivilId;
-        
+
         var isFCreditScore = delinquencies.Count > 3 ||
                              litigations.Any(l =>
                              {
@@ -105,9 +106,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
                                  if (loan == null)
                                      return false;
 
-                                 return loan.Amount >= 10_000 ? 
-                                     l.DateOfVerdict > DateTime.UtcNow.AddYears(-3) :
-                                     l.DateOfVerdict > DateTime.UtcNow.AddYears(-1);
+                                 return loan.Amount >= 10_000 ? l.DateOfVerdict > DateTime.UtcNow.AddYears(-3) : l.DateOfVerdict > DateTime.UtcNow.AddYears(-1);
                              });
 
         var creditScore = (isFCreditScore, delinquencies.Count, activeLoans.Count) switch
@@ -127,5 +126,27 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
         };
 
         return new CustomerCreditScoreResponse(customerId, civilId, creditScore);
+    }
+
+
+    public async Task<GetCustomerTotalLoansResponse> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
+    {
+        var loans = await loanClient.GetLoansByCustomerIdAsync(customerId, cancellationToken);
+        var activeLoans = loans.Where(l => l.Status == "Active").ToList();
+        if (activeLoans.Count == 0)
+            return new GetCustomerTotalLoansResponse(0, []);
+
+        var litigations = await litigationsService.GetLitigationsByLoanIds([.. activeLoans.Select(l => l.LoanId)], cancellationToken);
+
+        var loansInLitigation = litigations
+            .Where(l => l.Status is "Pending" or "Guilty")
+            .Select(l => l.LoanId)
+            .ToHashSet();
+        var activeLoansNoLitigations = activeLoans.Where(l => !loansInLitigation.Contains(l.LoanId)).ToList();
+
+        var total =
+            activeLoansNoLitigations.Sum(l => l.Amount);
+
+        return new GetCustomerTotalLoansResponse(total, activeLoansNoLitigations);
     }
 }

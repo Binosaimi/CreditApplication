@@ -18,4 +18,10 @@ public class PaymentsController(PaymentsService service)
 
         return await service.GetCustomerLastNPayments(customerId, numberOfPayments, cancellationToken);
     }
+    
+    [HttpGet("loan/{loanId:guid}")]
+    public async Task<List<PaymentsResponse>> GetLoansPayments(Guid loanId, CancellationToken cancellationToken)
+    {
+        return await service.GetLoansPayments(loanId, cancellationToken);
+    }
 }

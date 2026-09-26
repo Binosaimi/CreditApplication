@@ -23,6 +23,21 @@ public class LitigationsService(CustomerDbContext db)
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<List<LitigationResponse>> GetLitigationsByLoanIds(Guid[] loanIds, CancellationToken cancellationToken)
+    {
+        return await db.Litigation
+            .AsNoTracking()
+            .Where(l => Enumerable.Contains(loanIds, l.LoanId))
+            .Select(litigation => new LitigationResponse(
+                litigation.LitigationId,
+                litigation.CourtId,
+                litigation.LoanId,
+                litigation.InstitutionId,
+                litigation.CustomerId,
+                litigation.Status,
+                litigation.DateOfVerdict))
+            .ToListAsync(cancellationToken);
+    }
     public async Task<LitigationResponse> CreateLitigation(CreateLitigationRequest createLitigationRequest)
     {
         var litigation = new Litigation
