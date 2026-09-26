@@ -1,5 +1,6 @@
 ﻿using credit.customers.Dtos;
 using credit.customers.Services;
+using credit.loans.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace credit.customers.Controllers;
@@ -54,5 +55,17 @@ public class CustomersController(CustomerService service) : ControllerBase
     public async Task<ActionResult<CustomerCreditScoreResponse>> GetCreditScore(Guid customerId, CancellationToken cancellationToken)
     {
         return await service.CalculateCreditScore(customerId, cancellationToken);
+    }
+    
+    [HttpGet("customerId:guid/nextduepayment")]
+    public async Task<ActionResult<NextDuePaymentResponse>> GetNextDuePayment(Guid customerId, CancellationToken cancellationToken)
+    {
+        return await service.GetNextDuePayment(customerId, cancellationToken);
+    }
+    
+    [HttpGet("customerId:guid/totalloans")]
+    public async Task<ActionResult<CustomerTotalLoansResponse>> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
+    {
+        return await service.GetCustomerTotalLoans(customerId, cancellationToken);
     }
 }

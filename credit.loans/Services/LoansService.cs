@@ -85,4 +85,5 @@ public class LoansService(LoanDbContext db)
         return new LoansResponse(
             loan.LoanId, loan.CustomerId, loan.InstitutionId, loan.LoanStartDate, loan.Tenor, loan.Amount, loan.Rate, loan.Status);
     }
+    
 }

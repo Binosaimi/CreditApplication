@@ -3,6 +3,7 @@ using credit.customers.Data;
 using credit.customers.Data.Entities;
 using credit.customers.Dtos;
 using credit.customers.Exceptions;
+using credit.loans.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace credit.customers.Services;
@@ -89,12 +90,15 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
      */
     public async Task<CustomerCreditScoreResponse> CalculateCreditScore(Guid customerId, CancellationToken cancellationToken)
     {
+        var customer = await GetCustomerByIdAsync(customerId, cancellationToken);
+        if (customer is null)
+            throw new GlobalExceptionHandler.CustomerNotFoundException("Customer not found");
         var loans = await loanClient.GetLoansByCustomerIdAsync(customerId, cancellationToken);
         var activeLoans = loans.Where(l => l.Status == "Active").ToList();
         var delinquencies = await loanClient.GetDelinquencies(customerId, cancellationToken);
         var litigations = await litigationsService.GetLitigations(customerId, cancellationToken);
-        var civilId = (await GetCustomerByIdAsync(customerId, cancellationToken)).CivilId;
-
+        
+        var civilId = customer.CivilId;
         var isFCreditScore = delinquencies.Count > 3 ||
                              litigations.Any(l =>
                              {
@@ -127,14 +131,13 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
 
         return new CustomerCreditScoreResponse(customerId, civilId, creditScore);
     }
-
-
-    public async Task<GetCustomerTotalLoansResponse> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
+    
+    public async Task<CustomerTotalLoansResponse> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
     {
         var loans = await loanClient.GetLoansByCustomerIdAsync(customerId, cancellationToken);
         var activeLoans = loans.Where(l => l.Status == "Active").ToList();
         if (activeLoans.Count == 0)
-            return new GetCustomerTotalLoansResponse(0, []);
+            return new CustomerTotalLoansResponse(0, []);
 
         var litigations = await litigationsService.GetLitigationsByLoanIds([.. activeLoans.Select(l => l.LoanId)], cancellationToken);
 
@@ -147,6 +150,31 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
         var total =
             activeLoansNoLitigations.Sum(l => l.Amount);
 
-        return new GetCustomerTotalLoansResponse(total, activeLoansNoLitigations);
+        return new CustomerTotalLoansResponse(total, activeLoansNoLitigations);
+    }
+
+    public async Task<NextDuePaymentResponse> GetNextDuePayment(
+        Guid customerId,
+        CancellationToken cancellationToken)
+    {
+        var today = DateTime.UtcNow.Date;
+        var loans = await loanClient.GetLoansByCustomerIdAsync(
+            customerId,
+            cancellationToken);
+
+        var payments = loans
+            .Where(l => l.Status == "Active")
+            .Select(l =>
+            {
+                var dueDate = new DateTime(today.Year, today.Month, l.LoanStartDate.Day);
+
+                if (dueDate < today)
+                    dueDate = dueDate.AddMonths(1);
+
+                return new NextDuePaymentResponse(l.LoanId, dueDate);
+            });
+
+        return payments.MinBy(p => p.DueDate)
+               ?? throw new GlobalExceptionHandler.NoLoansException("Customer has no active loans");
     }
 }

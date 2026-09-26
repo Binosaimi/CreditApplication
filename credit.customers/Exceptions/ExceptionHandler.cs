@@ -75,4 +75,7 @@ public sealed class GlobalExceptionHandler(
         : Exception(message);
     public class LitigationException(string message)
         : Exception(message);
+    
+    public class CustomerNotFoundException(string message)
+        : Exception(message);
 }
