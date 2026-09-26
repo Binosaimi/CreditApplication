@@ -16,7 +16,7 @@ namespace credit.loans.Services;
  */
 public class LoansService(LoanDbContext db)
 {
-    public async Task<LoansResponse> GetLoansByCustomerAsync(Guid customerId, CancellationToken cancellationToken)
+    public async Task<List<LoansResponse>> GetLoansByCustomerAsync(Guid customerId, CancellationToken cancellationToken)
     {
         try
         {
@@ -32,7 +32,7 @@ public class LoansService(LoanDbContext db)
                     loan.Amount,
                     loan.Rate,
                     loan.Status
-                )).FirstOrDefaultAsync(cancellationToken);
+                )).ToListAsync(cancellationToken);
         }
         catch (Exception e)
         {

@@ -9,7 +9,7 @@ namespace credit.loans.Controllers;
 public class LoansController(LoansService service) : ControllerBase
 {
     [HttpGet("{customerId:guid}")]
-    public async Task<LoansResponse> Get(Guid customerId, CancellationToken cancellationToken)
+    public async Task<List<LoansResponse>> Get(Guid customerId, CancellationToken cancellationToken)
     {
         return await service.GetLoansByCustomerAsync(customerId, cancellationToken);
     }

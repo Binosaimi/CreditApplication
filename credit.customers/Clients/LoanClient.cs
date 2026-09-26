@@ -21,7 +21,7 @@ public class LoanClient(HttpClient client)
 
         return await response.Content.ReadFromJsonAsync<List<LoansResponse>>(cancellationToken) ?? [];
     }
-    
+
     public async Task<List<LoansResponse>> GetActiveLoansByCustomerIdAsync(
         Guid customerId,
         CancellationToken cancellationToken)
