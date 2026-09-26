@@ -44,6 +44,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider
+        .GetRequiredService<CustomerDbContext>();
+
+    await db.Database.MigrateAsync();
+    await CustomerDbSeeder.SeedAsync(db);
+}
 
 app.UseHttpsRedirection();
 

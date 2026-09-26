@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using credit.loans.Data;
@@ -11,9 +12,11 @@ using credit.loans.Data;
 namespace credit.loans.Migrations
 {
     [DbContext(typeof(LoanDbContext))]
-    partial class LoanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260926193618_UpdatedStuff")]
+    partial class UpdatedStuff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +40,12 @@ namespace credit.loans.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("loan_id");
 
+                    b.Property<Guid>("LoansLoanId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("DelinquencyId");
 
-                    b.HasIndex("LoanId");
+                    b.HasIndex("LoansLoanId");
 
                     b.ToTable("Delinquencies", (string)null);
                 });
@@ -120,7 +126,7 @@ namespace credit.loans.Migrations
                 {
                     b.HasOne("credit.loans.Data.Entities.Loans", "Loans")
                         .WithMany()
-                        .HasForeignKey("LoanId")
+                        .HasForeignKey("LoansLoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

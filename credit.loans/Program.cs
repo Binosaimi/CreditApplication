@@ -21,11 +21,6 @@ builder.Services.AddScoped<DelinquenciesService>();
 builder.Services.AddScoped<PaymentsService>();
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<LoanDbContext>();
-    db.Database.Migrate();
-}
 
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
@@ -36,6 +31,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider
+        .GetRequiredService<LoanDbContext>();
+
+    await db.Database.MigrateAsync();
+    await LoanDbSeeder.SeedAsync(db);
+}
 app.UseHttpsRedirection();
 
 // app.UseAuthorization();

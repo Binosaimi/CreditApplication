@@ -8,7 +8,7 @@ public class LoanDbContext(DbContextOptions<LoanDbContext> options) : DbContext(
     public DbSet<Loans> Loans => Set<Loans>();
     public DbSet<Delinquencies> Delinquencies => Set<Delinquencies>();
     public DbSet<PaymentLedger> PaymentLedger => Set<PaymentLedger>();
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Loans>(entity =>
@@ -23,7 +23,7 @@ public class LoanDbContext(DbContextOptions<LoanDbContext> options) : DbContext(
             entity.Property(e => e.Rate).HasColumnName("rate");
             entity.Property(e => e.Status).HasColumnName("status");
         });
-        
+
         modelBuilder.Entity<PaymentLedger>(entity =>
         {
             entity.ToTable("PaymentLedger");
@@ -34,13 +34,26 @@ public class LoanDbContext(DbContextOptions<LoanDbContext> options) : DbContext(
             entity.Property(e => e.InstitutionId).HasColumnName("institution_id");
             entity.Property(e => e.Amount).HasColumnName("amount");
         });
-        
+
         modelBuilder.Entity<Delinquencies>(entity =>
         {
             entity.ToTable("Delinquencies");
             entity.Property(e => e.DelinquencyId).HasColumnName("id");
             entity.Property(e => e.LoanId).HasColumnName("loan_id");
             entity.Property(e => e.DelinquencyDate).HasColumnName("delinquency_date");
+        });
+
+        modelBuilder.Entity<Delinquencies>(entity =>
+        {
+            entity.ToTable("Delinquencies");
+
+            entity.Property(e => e.DelinquencyId).HasColumnName("id");
+            entity.Property(e => e.LoanId).HasColumnName("loan_id");
+            entity.Property(e => e.DelinquencyDate).HasColumnName("delinquency_date");
+
+            entity.HasOne(d => d.Loans)
+                .WithMany()
+                .HasForeignKey(d => d.LoanId);
         });
     }
 }
