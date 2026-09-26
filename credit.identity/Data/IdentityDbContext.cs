@@ -9,41 +9,43 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
     public DbSet<Users> Users { get; set; }
     public DbSet<Roles> Roles { get; set; }
     public DbSet<Institutes> Institutes { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UsersRoles>(entity =>
         {
             entity.ToTable("users_roles");
+            entity.HasKey(e => new { e.UserId, e.RoleId });
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId);
+            entity.HasOne(e => e.Role).WithMany().HasForeignKey(e => e.RoleId);
         });
-        
+
         modelBuilder.Entity<UsersRoles>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
-        
+
         modelBuilder.Entity<Users>(entity =>
         {
             entity.ToTable("users");
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Username).HasColumnName("username");
+            entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.InstituteId).HasColumnName("institution_id");
         });
-        
+
         modelBuilder.Entity<Institutes>(entity =>
         {
             entity.ToTable("institutes");
             entity.Property(e => e.InstituteId).HasColumnName("institute_id");
             entity.Property(e => e.InstituteName).HasColumnName("name");
         });
-        
+
         modelBuilder.Entity<Roles>(entity =>
         {
             entity.ToTable("roles");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.RoleName).HasColumnName("name");
         });
-        
     }
-    
 }

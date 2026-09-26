@@ -1,10 +1,12 @@
 ﻿using credit.customers.Dtos;
 using credit.customers.Services;
 using credit.loans.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace credit.customers.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/customers")]
 public class CustomersController(CustomerService service) : ControllerBase
