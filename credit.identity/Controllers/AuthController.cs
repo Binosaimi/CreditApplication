@@ -9,16 +9,16 @@ namespace credit.identity.Controllers;
 public class AuthController(AuthService authService) : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<IActionResult> Login(
+    public async Task<ActionResult<LoginResponse>> Login(
         LoginRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await authService.AuthenticateAsync(
-            request,
-            cancellationToken);
-
-        return Ok(user);
+        return Ok(
+            await authService.AuthenticateAsync(
+                request,
+                cancellationToken));
     }
+
     [HttpPost("register")]
     public async Task<ActionResult<SignupResponse>> Register(
         SignupRequest request,

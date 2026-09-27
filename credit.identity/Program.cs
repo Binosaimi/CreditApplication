@@ -1,9 +1,8 @@
 using credit.identity.Data;
-using credit.identity.Services;
-using Microsoft.EntityFrameworkCore;
 using credit.identity.Data.Entities;
 using credit.identity.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +18,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<IdentityDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<InstituteService>();
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
-// builder.Services.AddScoped<LoansService>();
+
 
 var app = builder.Build();
 // using (var scope = app.Services.CreateScope())
