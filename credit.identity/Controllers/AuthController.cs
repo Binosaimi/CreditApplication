@@ -1,5 +1,6 @@
 ﻿using credit.identity.Dtos;
 using credit.identity.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace credit.identity.Controllers;
@@ -29,5 +30,31 @@ public class AuthController(AuthService authService) : ControllerBase
             cancellationToken);
 
         return Ok(response);
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost("roles")]
+    public async Task<IActionResult> CreateRole(
+        CreateRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        var role = await authService.CreateRole(
+            request,
+            cancellationToken);
+
+        return Ok(role);
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost("user-roles")]
+    public async Task<IActionResult> AssignRole(
+        AssignRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        await authService.AssignRole(
+            request,
+            cancellationToken);
+
+        return Ok();
     }
 }

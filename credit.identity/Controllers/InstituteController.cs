@@ -1,5 +1,6 @@
 ﻿using credit.identity.Dtos;
 using credit.identity.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace credit.identity.Controllers;
@@ -9,6 +10,7 @@ namespace credit.identity.Controllers;
 public class InstituteController(InstituteService service) : ControllerBase
 {
     
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [Route("institute")]
     public async Task<InstituteResponse> CreateInstitute(CreateInstituteRequest instituteRequest, CancellationToken cancellationToken)

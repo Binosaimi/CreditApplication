@@ -1,11 +1,11 @@
-﻿using credit.identity.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using credit.identity.Data;
 using credit.identity.Data.Entities;
 using credit.identity.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace credit.identity.Services;
@@ -15,7 +15,7 @@ public class AuthService(
     IPasswordHasher<Users> passwordHasher,
     IConfiguration configuration)
 {
-public async Task<LoginResponse> AuthenticateAsync(
+    public async Task<LoginResponse> AuthenticateAsync(
         LoginRequest request,
         CancellationToken cancellationToken)
     {
@@ -53,7 +53,7 @@ public async Task<LoginResponse> AuthenticateAsync(
         };
 
         claims.AddRange(
-            roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            roles.Select(role => new Claim("role", role)));
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(
@@ -102,7 +102,6 @@ public async Task<LoginResponse> AuthenticateAsync(
             request.Password);
         try
         {
-
             db.Users.Add(user);
         }
         catch (Exception e)
@@ -118,5 +117,101 @@ public async Task<LoginResponse> AuthenticateAsync(
             user.UserId,
             user.InstituteId,
             user.Username);
+    }
+
+    public async Task<String> CreateRole(CreateRoleRequest request, CancellationToken cancellationToken)
+    {
+        var role = new Roles
+        {
+            RoleId = Guid.NewGuid(),
+            RoleName = request.RoleName
+        };
+        try
+        {
+            db.Roles.Add(role);
+            await db.SaveChangesAsync(cancellationToken);
+            return role.RoleName;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task AssignRole(
+        AssignRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        Users? user;
+        try
+        {
+            user = await db.Users
+                .SingleOrDefaultAsync(
+                    u => u.Username == request.Username,
+                    cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        if (user is null)
+            throw new ArgumentException("User not found");
+
+        Roles? role;
+        try
+        {
+            role = await db.Roles
+                .SingleOrDefaultAsync(
+                    r => r.RoleName == request.RoleName,
+                    cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+
+        if (role is null)
+            throw new ArgumentException("Role not found");
+
+        bool alreadyAssigned;
+        try
+        {
+            alreadyAssigned = await db.UsersRoles
+                .AnyAsync(
+                    ur => ur.UserId == user.UserId &&
+                          ur.RoleId == role.RoleId,
+                    cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+
+        if (alreadyAssigned)
+            throw new InvalidOperationException(
+                "Role already assigned to user");
+
+        try
+        {
+            db.UsersRoles.Add(new UsersRoles
+            {
+                UserId = user.UserId,
+                RoleId = role.RoleId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

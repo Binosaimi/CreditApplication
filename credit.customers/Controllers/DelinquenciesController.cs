@@ -1,5 +1,6 @@
 ﻿using credit.customers.Dtos;
 using credit.customers.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace credit.customers.Controllers;
@@ -9,6 +10,7 @@ namespace credit.customers.Controllers;
 [Route("api/v1/delinquencies")]
 public class DelinquenciesController(DelinquenciesService service) : ControllerBase
 {
+    [Authorize(Roles = "Reader")]
     [HttpGet("{customerId:guid}/delinquencies")]
     public async Task<GetCustomerDelinquenciesResponse> GetCustomerDelinquentLoans(Guid customerId, CancellationToken cancellationToken)
     {

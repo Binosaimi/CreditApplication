@@ -59,6 +59,7 @@ builder.Services
             ValidateAudience = true,
             ValidAudience = builder.Configuration["Jwt:Audience"],
 
+            RoleClaimType = "role",
             ValidateLifetime = true,
 
             ValidateIssuerSigningKey = true,

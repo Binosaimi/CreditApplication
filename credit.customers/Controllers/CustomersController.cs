@@ -11,6 +11,7 @@ namespace credit.customers.Controllers;
 [Route("api/v1/customers")]
 public class CustomersController(CustomerService service) : ControllerBase
 {
+    [Authorize(Roles = "Reader")]
     [HttpGet("{customerId:guid}")]
     public async Task<ActionResult<CustomerResponse>> Get(Guid customerId, CancellationToken cancellationToken)
     {
@@ -22,6 +23,7 @@ public class CustomersController(CustomerService service) : ControllerBase
         return Ok(customer);
     }
 
+    [Authorize(Roles = "Writer")]
     [HttpPost]
     public async Task<ActionResult<CustomerResponse>> Create(
         CreateCustomerRequest request,
@@ -34,7 +36,8 @@ public class CustomersController(CustomerService service) : ControllerBase
             new { customerId = customer.CustomerId },
             customer);
     }
-    
+
+    [Authorize(Roles = "Reader")]
     [HttpGet]
     public async Task<ActionResult<List<CustomerResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
@@ -42,7 +45,8 @@ public class CustomersController(CustomerService service) : ControllerBase
 
         return Ok(customers);
     }
-    
+
+    [Authorize(Roles = "Writer")]
     [HttpPost("customer-block")]
     public async Task<ActionResult<CustomerResponse>> BlockCustomer(
         BlockCustomerRequest request,
@@ -52,19 +56,22 @@ public class CustomersController(CustomerService service) : ControllerBase
 
         return Ok(customer);
     }
-    
+
+    [Authorize(Roles = "Reader")]
     [HttpGet("customerId:guid/creditscore")]
     public async Task<ActionResult<CustomerCreditScoreResponse>> GetCreditScore(Guid customerId, CancellationToken cancellationToken)
     {
         return await service.CalculateCreditScore(customerId, cancellationToken);
     }
-    
+
+    [Authorize(Roles = "Reader")]
     [HttpGet("customerId:guid/nextduepayment")]
     public async Task<ActionResult<NextDuePaymentResponse>> GetNextDuePayment(Guid customerId, CancellationToken cancellationToken)
     {
         return await service.GetNextDuePayment(customerId, cancellationToken);
     }
-    
+
+    [Authorize(Roles = "Reader")]
     [HttpGet("customerId:guid/totalloans")]
     public async Task<ActionResult<CustomerTotalLoansResponse>> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
     {
