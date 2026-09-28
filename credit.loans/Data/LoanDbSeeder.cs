@@ -56,8 +56,7 @@ public static class LoanDbSeeder
                     LoanId = loanCId,
                     CustomerId = customerCId,
                     InstitutionId = institutionId,
-                    LoanStartDate = new DateTime(
-                        2024, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                    LoanStartDate = new DateTime(2024, 1, 10, 0, 0, 0, DateTimeKind.Utc),
                     Tenor = 48,
                     Amount = 8_000,
                     Rate = 4.5,
