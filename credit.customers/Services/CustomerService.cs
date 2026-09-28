@@ -97,7 +97,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
         var activeLoans = loans.Where(l => l.Status == "Active").ToList();
         var delinquencies = await loanClient.GetDelinquencies(customerId, cancellationToken);
         var litigations = await litigationsService.GetLitigations(customerId, cancellationToken);
-        
+
         var civilId = customer.CivilId;
         var isFCreditScore = delinquencies.Count > 3 ||
                              litigations.Any(l =>
@@ -131,7 +131,7 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
 
         return new CustomerCreditScoreResponse(customerId, civilId, creditScore);
     }
-    
+
     public async Task<CustomerTotalLoansResponse> GetCustomerTotalLoans(Guid customerId, CancellationToken cancellationToken)
     {
         var loans = await loanClient.GetLoansByCustomerIdAsync(customerId, cancellationToken);
@@ -166,7 +166,8 @@ public class CustomerService(CustomerDbContext db, LoanClient loanClient, Litiga
             .Where(l => l.Status == "Active")
             .Select(l =>
             {
-                var dueDate = new DateTime(today.Year, today.Month, l.LoanStartDate.Day);
+                var day = Math.Min(l.LoanStartDate.Day, DateTime.DaysInMonth(today.Year, today.Month));
+                var dueDate = new DateTime(today.Year, today.Month, day);
 
                 if (dueDate < today)
                     dueDate = dueDate.AddMonths(1);

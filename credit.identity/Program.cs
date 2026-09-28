@@ -82,7 +82,9 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<IdentityDbContext>();
 
     await db.Database.MigrateAsync();
-    await IdentityDbSeeder.SeedAsync(db);
+    var passwordHasher = scope.ServiceProvider
+        .GetRequiredService<IPasswordHasher<Users>>();
+    await IdentityDbSeeder.SeedAsync(db, passwordHasher);
 }
 
 app.UseHttpsRedirection();
