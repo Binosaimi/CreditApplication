@@ -11,7 +11,7 @@
 Create a `.env` file in the project root:
 
 ```env
-JWT_KEY=<your-jwt-signing-key>
+JWT_KEY=<your-jwt-signing-key> (must be algorithm 'HS256' -- example: yvkZONdTWniWyawFRaNQwxYzzHy0nQZtuYvOfFZIzet )
 ```
 Then run:
 `docker compose up --build`
