@@ -6,6 +6,8 @@
       dockerfile: credit.customers/Dockerfile
     ports:
       - "5101:8080"
+    environment:
+      Jwt__Key: ${JWT_KEY}
 
   credit.loans:
     image: credit.loans
@@ -14,6 +16,8 @@
       dockerfile: credit.loans/Dockerfile
     ports:
       - "5102:8080"
+    environment:
+      Jwt__Key: ${JWT_KEY}
 
   credit.identity:
     image: credit.identity
@@ -22,6 +26,8 @@
       dockerfile: credit.identity/Dockerfile
     ports:
       - "5103:8080"
+    environment:
+      Jwt__Key: ${JWT_KEY}
     
   postgres:
     image: postgres:17
