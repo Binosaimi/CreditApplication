@@ -27,6 +27,7 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.MapInboundClaims = false;
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -40,7 +41,9 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    builder.Configuration["Jwt:Key"]!))
+                    builder.Configuration["Jwt:Key"]!)),
+
+            RoleClaimType = "role"
         };
     });
 
@@ -63,7 +66,6 @@ using (var scope = app.Services.CreateScope())
     await LoanDbSeeder.SeedAsync(db);
 }
 
-// app.UseAuthorization();
 
 app.MapControllers();
 
