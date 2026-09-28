@@ -1,11 +1,27 @@
 ﻿namespace credit.customers.Clients;
 
-public class LoanClient(HttpClient client)
+public class LoanClient(HttpClient client, IHttpContextAccessor httpContextAccessor)
 {
+    private void ForwardAuthorizationHeader()
+    {
+        var authorization =
+            httpContextAccessor.HttpContext?
+                .Request.Headers.Authorization
+                .ToString();
+
+        if (!string.IsNullOrWhiteSpace(authorization))
+        {
+            client.DefaultRequestHeaders.Remove("Authorization");
+            client.DefaultRequestHeaders.TryAddWithoutValidation(
+                "Authorization",
+                authorization);
+        }
+    }
     public async Task<List<DelinquenciesResponse>> GetDelinquencies(
         Guid customerId,
         CancellationToken cancellationToken)
     {
+        ForwardAuthorizationHeader();
         var response = await client.GetAsync($"/api/v1/delinquencies/{customerId}", cancellationToken);
         response.EnsureSuccessStatusCode();
 
@@ -16,6 +32,7 @@ public class LoanClient(HttpClient client)
         Guid customerId,
         CancellationToken cancellationToken)
     {
+        ForwardAuthorizationHeader();
         var response = await client.GetAsync($"/api/v1/loans/{customerId}", cancellationToken);
         response.EnsureSuccessStatusCode();
 
@@ -26,6 +43,7 @@ public class LoanClient(HttpClient client)
         Guid customerId,
         CancellationToken cancellationToken)
     {
+        ForwardAuthorizationHeader();
         var response = await client.GetAsync($"/api/v1/loans/{customerId}", cancellationToken);
         response.EnsureSuccessStatusCode();
 

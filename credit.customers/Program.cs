@@ -68,7 +68,7 @@ builder.Services
                     builder.Configuration["Jwt:Key"]!)),
         };
     });
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 var app = builder.Build();
 app.UseAuthentication();
