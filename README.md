@@ -16,6 +16,9 @@ JWT_KEY=<your-jwt-signing-key>
 Then run:
 `docker compose up --build`
 
+- credit.identity: http://localhost:5103/swagger/index.html
+- credit.customers: http://localhost:5101/swagger/index.html
+- credit.loans: http://localhost:5102/swagger/index.html
 ## DB Seeding
 - The services apply database migrations and seed development data during startup.
   
