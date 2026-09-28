@@ -68,13 +68,9 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -87,6 +83,5 @@ using (var scope = app.Services.CreateScope())
     await IdentityDbSeeder.SeedAsync(db, passwordHasher);
 }
 
-app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

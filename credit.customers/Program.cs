@@ -1,12 +1,11 @@
+using System.Text;
 using credit.customers.Clients;
-using credit.customers.Controllers;
 using credit.customers.Data;
 using credit.customers.Exceptions;
 using credit.customers.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,14 +74,10 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider
@@ -92,7 +87,6 @@ using (var scope = app.Services.CreateScope())
     await CustomerDbSeeder.SeedAsync(db);
 }
 
-app.UseHttpsRedirection();
 
 app.MapControllers();
 

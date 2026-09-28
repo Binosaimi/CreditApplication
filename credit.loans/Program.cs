@@ -50,13 +50,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseExceptionHandler();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -66,7 +62,6 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
     await LoanDbSeeder.SeedAsync(db);
 }
-app.UseHttpsRedirection();
 
 // app.UseAuthorization();
 
